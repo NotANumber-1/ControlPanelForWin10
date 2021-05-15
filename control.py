@@ -1,18 +1,38 @@
 import tkinter as tk
-import time, os, subprocess
-from tkinter.constants import ALL
+from tkinter import messagebox
+import time, os, platform, psutil
 window = tk.Tk()
+def convertTime(seconds):
+    minutes, seconds = divmod(seconds, 60)
+    hours, minutes = divmod(minutes, 60)
+    return "%d:%02d:%02d" % (hours, minutes, seconds)
 def close(data=""):
-    time.sleep(0.25)
-    window.destroy()
+    _conf = messagebox.askokcancel(title="Close window confirm", message="Close Control Panel window?")
+    if _conf:
+        time.sleep(0.25)
+        window.destroy()
+    else:
+        pass
 def unfullscreen():
     window.attributes("-fullscreen", False)
 def fullscreen():
     window.attributes("-fullscreen", True)
 def taskmgr():
     os.system("taskmgr")
-
-
+def osinfo():
+    messagebox.showinfo(title="OS info", message=f"Platform: {platform.platform()}")
+def batinfo():
+    battery = psutil.sensors_battery()
+    messagebox.showinfo(title="Battery info", message=f"Percentage: {battery.percent}\nPlugged: {battery.power_plugged}\nSeconds left: {convertTime(battery.secsleft)}")
+def shutdown10():
+    _conf = messagebox.askokcancel(title="System shutdown confirm", message="Shutdown system?")
+    if _conf:
+        os.system("shutdown -s -t 10")
+    else:
+        pass
+def cancshutdown():
+    os.system("shutdown -a")
+    messagebox.showinfo(title="Shutdown canceled", message="Shutdown has been canceled")
 window.geometry("1024x512")
 window.title("Control Panel")
 window.iconbitmap("app.ico")
@@ -51,6 +71,31 @@ command_message = tk.Label(text="Command line")
 command_message.config(font=("Arial", 16))
 command_message.pack()
 command_message.place(x=256, y=32)
+
+show_os_button = tk.Button(text="Show OS info", bg="yellow", fg="black", width=12, height=2, command=osinfo)
+show_os_button.config(font=("Arial", 12))
+show_os_button.pack()
+show_os_button.place(x=10, y=384)
+
+show_battery_button = tk.Button(text="Show battery info", bg="yellow", fg="black", width=14, height=2, command=batinfo)
+show_battery_button.config(font=("Arial", 12))
+show_battery_button.pack()
+show_battery_button.place(x=10, y=464)
+"""
+_button = tk.Button(text="???", bg="yellow", fg="black", width=14, height=2, command=???)
+_button.config(font=("Arial", 12))
+_button.pack()
+_button.place(x=0, y=0)
+"""
+shutdown10s_button = tk.Button(text="Shutdown (10s)", bg="yellow", fg="black", width=16, height=2, command=shutdown10)
+shutdown10s_button.config(font=("Arial", 12))
+shutdown10s_button.pack()
+shutdown10s_button.place(x=10, y=544)
+
+shutdowncan_button = tk.Button(text="Cancel shutdown", bg="yellow", fg="black", width=16, height=2, command=cancshutdown)
+shutdowncan_button.config(font=("Arial", 12))
+shutdowncan_button.pack()
+shutdowncan_button.place(x=10, y=624)
 def command(data=""):
     print("Command:")
     command_line = command_entry.get()
