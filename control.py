@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-import time, os, platform, psutil
+import time, os, platform, psutil, keyboard
 window = tk.Tk()
 def convertTime(seconds):
     minutes, seconds = divmod(seconds, 60)
@@ -19,11 +19,13 @@ def fullscreen():
     window.attributes("-fullscreen", True)
 def taskmgr():
     os.system("taskmgr")
+def ctrlpn():
+    os.system("control")
 def osinfo():
     messagebox.showinfo(title="OS info", message=f"Platform: {platform.platform()}")
 def batinfo():
     battery = psutil.sensors_battery()
-    messagebox.showinfo(title="Battery info", message=f"Percentage: {battery.percent}\nPlugged: {battery.power_plugged}\nSeconds left: {convertTime(battery.secsleft)}")
+    messagebox.showinfo(title="Battery info", message=f"Percentage: {battery.percent}\nPlugged: {battery.power_plugged}\Time left: {convertTime(battery.secsleft)}")
 def shutdown10():
     _conf = messagebox.askokcancel(title="System shutdown confirm", message="Shutdown system?")
     if _conf:
@@ -33,6 +35,17 @@ def shutdown10():
 def cancshutdown():
     os.system("shutdown -a")
     messagebox.showinfo(title="Shutdown canceled", message="Shutdown has been canceled")
+def run():
+    keyboard.press("Windows")
+    keyboard.press("r")
+    keyboard.release("Windows")
+    keyboard.release("r")
+def lock():
+    _conf = messagebox.askokcancel(title="Control Panel lock confirm", message="Lock Control Panel window?")
+    if _conf:
+        os.system("pause")
+    else:
+        pass
 window.geometry("1024x512")
 window.title("Control Panel")
 window.iconbitmap("app.ico")
@@ -96,6 +109,21 @@ shutdowncan_button = tk.Button(text="Cancel shutdown", bg="yellow", fg="black", 
 shutdowncan_button.config(font=("Arial", 12))
 shutdowncan_button.pack()
 shutdowncan_button.place(x=10, y=624)
+
+control_button = tk.Button(text="Control Panel", bg="yellow", fg="black", width=14, height=2, command=ctrlpn)
+control_button.config(font=("Arial", 12))
+control_button.pack()
+control_button.place(x=208, y=304)
+
+run_button = tk.Button(text="Run", bg="yellow", fg="black", width=14, height=2, command=run)
+run_button.config(font=("Arial", 12))
+run_button.pack()
+run_button.place(x=208, y=384)
+
+lock_button = tk.Button(text="Lock", bg="Red", fg="white", width=8, height=2, command=lock)
+lock_button.config(font=("Arial", 12))
+lock_button.pack()
+lock_button.place(x=208, y=144)
 def command(data=""):
     print("Command:")
     command_line = command_entry.get()
